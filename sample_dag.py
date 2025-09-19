@@ -27,7 +27,7 @@ with DAG(
         bash_command="date",
         executor_config={
             "pod_override": V1Pod(
-                metadata=V1ObjectMeta()
+                metadata=V1ObjectMeta(namespace="airflow")
             )
         }
     )
@@ -37,7 +37,7 @@ with DAG(
         bash_command="echo 'Hello from Airflow DAG!'",
         executor_config={
             "pod_override": V1Pod(
-                metadata=V1ObjectMeta(namespace="cisco")
+                metadata=V1ObjectMeta(namespace="airflow")
             )
         }
     )
