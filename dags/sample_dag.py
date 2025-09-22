@@ -26,16 +26,22 @@ with DAG(
         task_id="print_date",
         bash_command="date",
         executor_config={
-            "pod_override": V1Pod(metadata=V1ObjectMeta())
-        }
+            "KubernetesExecutor": {
+                "namespace": "dagns",   # 👈 override namespace
+                "serviceAccountName": "airflow-dag-sa",  # 👈 DAG pods use this SA
+            }
+        },
     )
 
     task2 = BashOperator(
         task_id="say_hello",
         bash_command="echo 'Hello from Airflow DAG!'",
         executor_config={
-            "pod_override": V1Pod(metadata=V1ObjectMeta())
-        }
+            "KubernetesExecutor": {
+                "namespace": "dagns",
+                "serviceAccountName": "airflow-dag-sa",
+            }
+        },
     )
 
     task1 >> task2
