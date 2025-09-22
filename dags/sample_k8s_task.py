@@ -1,22 +1,21 @@
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
-from datetime import datetime
-
+from datetime import datetime, timedelta
+ 
 with DAG(
-    dag_id="sample_k8s_task",
-    description="KubernetesPodOperator DAG running a pod with 30s loop",
-    schedule=None,            # <- use `schedule` on Airflow 2.10
-    start_date=datetime(2025, 1, 1),
+    dag_id="simple_k8s_task",
+    start_date=datetime(2025, 9, 19),
     catchup=False,
-    tags=["kubernetes", "example"],
+    schedule=None
 ) as dag:
+ 
     k8s_task = KubernetesPodOperator(
-        task_id="run_date_every_30s",
-        name="run-date-pod",
-        namespace="dagns",
-        image="busybox:1.35",
+        namespace="cisco",           # Pod will run in Cisco namespace
+        image="alpine:3.18",         # lightweight container
         cmds=["sh", "-c"],
-        arguments=["while true; do date && echo 'Hello from KubernetesPodOperator!'; sleep 30; done"],
-        service_account_name="airflow-dag-sa",
-        get_logs=True,
+        arguments=["echo 'Hello from Cisco'; sleep 3600"],
+        name="hello-cisco",
+        task_id="hello_cisco_task",
+        get_logs=False,
+        is_delete_operator_pod=False
     )
